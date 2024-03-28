@@ -19,7 +19,15 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                willConnectTo session: UISceneSession,
                options connectionOptions: UIScene.ConnectionOptions) {
         
-        guard let _ = (scene as? UIWindowScene) else { return }
+        if let windowScene = scene as? UIWindowScene {
+            
+            let navController = UINavigationController(rootViewController: MainViewConfigurator().initScene())
+            
+            let window = UIWindow(windowScene: windowScene)
+            window.rootViewController = navController
+            self.window = window
+            window.makeKeyAndVisible()
+        }
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {
