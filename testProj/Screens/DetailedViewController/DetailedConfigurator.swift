@@ -5,8 +5,6 @@
 //  Created by Roman Mokh on 27.03.2024.
 //
 
-import Foundation
-
 protocol DetailedConfiguratorProtocol: AnyObject {
     func initScene() -> DetailedViewController
 }

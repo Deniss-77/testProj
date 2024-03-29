@@ -10,18 +10,13 @@ import UIKit
 protocol MainViewProtocol: AnyObject {
     
     var navController: UINavigationController? { get }
+    
     func operationFailed(_ error: Error)
 }
 
 final class MainViewController: UIViewController {
     
-    private let backView: UIView = {
-        
-        let view = UIView()
-        view.backgroundColor = .white
-        
-        return view
-    }()
+    // MARK: Visual components
     
     private let collectionView: UICollectionView = {
         
@@ -32,7 +27,6 @@ final class MainViewController: UIViewController {
         
         let collectionView = UICollectionView(frame: .zero,
                                               collectionViewLayout: layout)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.backgroundColor = .white
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
@@ -66,8 +60,7 @@ final class MainViewController: UIViewController {
         self.title = "Главный экран"
         
         // add subViews
-        self.view.addSubview(self.backView)
-        self.backView.addSubview(self.collectionView)
+        self.view.addSubview(self.collectionView)
         
         // backgroundColor
         self.view.backgroundColor = .white
@@ -79,12 +72,8 @@ final class MainViewController: UIViewController {
     // установка констрейнтов
     private func setupConstraints() {
         
-        self.backView.snp.makeConstraints { make in
-            make.edges.equalTo(self.view.safeAreaLayoutGuide)
-        }
-        
         self.collectionView.snp.makeConstraints { make in
-            make.top.bottom.equalToSuperview()
+            make.top.bottom.equalTo(self.view.safeAreaLayoutGuide)
             make.left.right.equalToSuperview().inset(16)
         }
     }
@@ -102,14 +91,14 @@ final class MainViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImageName.iconCollection,
                                                                  style: .plain,
                                                                  target: self,
-                                                                 action: #selector(buttonImageClicked))
+                                                                 action: #selector(rightBarButtonClicked))
     }
     
     // получение данных и обновление коллекции
     private func fetchData() {
         
         // получение данных
-        self.view.addActivityIndicator()
+        self.view.addIndicator()
         self.viewModel?.fetchImages()
         
         // если данные получены
@@ -119,49 +108,51 @@ final class MainViewController: UIViewController {
             DispatchQueue.main.async {
                 
                 self?.collectionView.reloadData()
-                self?.view.removeActivityIndicator()
+                self?.view.removeIndicator()
             }
         }
         
         // если что-то пошло не так
         self.viewModel?.didFetchDataWithFailer = { [weak self] error in
-            
             self?.operationFailed(error)
         }
     }
     
     // нажатие на rightBarButton в navigationBar
-    @objc private func buttonImageClicked() {
+    @objc private func rightBarButtonClicked() {
         
         self.viewModel?.changeCollectionType()
         self.collectionView.reloadData()
     }
 }
 
-// MARK: UICollectionViewDataSource
+// MARK: реализация протокола UICollectionViewDataSource
 
 extension MainViewController: UICollectionViewDataSource {
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView,
+                        numberOfItemsInSection section: Int) -> Int {
+        
         guard let count = self.viewModel?.fetchCollectionViewModelsCount() else { return 0 }
         return count
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        guard let currentModel = self.viewModel?.fetchCollectionViewCellModel(indexPath: indexPath) else {
+        guard let cellModel = self.viewModel?.fetchCollectionViewCellModel(indexPath: indexPath) else {
             return UICollectionViewCell()
         }
         
         let collectionCell = collectionView.dequeueReusableCell(withReuseIdentifier: MainViewCollectionCell.identifier,
                                                                 for: indexPath) as! MainViewCollectionCell
-        collectionCell.configure(model: currentModel)
+        collectionCell.configure(model: cellModel)
         
         return collectionCell
     }
 }
 
-// MARK: UICollectionViewDelegate
+// MARK: реализация протокола UICollectionViewDelegate
 
 extension MainViewController: UICollectionViewDelegate {
     
@@ -172,24 +163,22 @@ extension MainViewController: UICollectionViewDelegate {
         self.viewModel?.moveToDetailViewController(with: url)
     }
     
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    func collectionView(_ collectionView: UICollectionView,
+                        willDisplay cell: UICollectionViewCell,
+                        forItemAt indexPath: IndexPath) {
         
-        guard let itemsCount = self.viewModel?.fetchCollectionViewModelsCount(),
-              let countOfPage = self.viewModel?.fetchCountOgPage(),
-              countOfPage < 100, // 100 - максимальное ко-во страниц
-              indexPath.item == itemsCount - 1  else { return }
+        guard let modelsCount = self.viewModel?.fetchCollectionViewModelsCount(),
+              let countOfPage = self.viewModel?.fetchCountOfPage(),
+              countOfPage < 100, // 100 - максимальное кол-во страниц
+              indexPath.item == modelsCount - 1 else { return }
         
         self.viewModel?.incrementCountOfPage()
-        
-        // запоминаем последнее место скролла и оставнавливаем его
-        let currentContentOffset = collectionView.contentOffset
-        collectionView.setContentOffset(currentContentOffset, animated: true)
-        
+        // получение данных
         self.fetchData()
     }
 }
 
-// MARK: UICollectionViewDelegateFlowLayout
+// MARK: реализация протокола UICollectionViewDelegateFlowLayout
 
 extension MainViewController: UICollectionViewDelegateFlowLayout {
     
@@ -206,6 +195,7 @@ extension MainViewController: UICollectionViewDelegateFlowLayout {
             
             width = self.collectionView.frame.width
             height = 180
+            break
             
         case .grid:
             
@@ -213,6 +203,7 @@ extension MainViewController: UICollectionViewDelegateFlowLayout {
             
             width = (self.collectionView.frame.width - 16) / itemsPerRow
             height = 180
+            break
             
         case .none:
             break
@@ -227,9 +218,13 @@ extension MainViewController: UICollectionViewDelegateFlowLayout {
 
 extension MainViewController: MainViewProtocol {
     
+    // MARK: Properties
+    
     var navController: UINavigationController? {
         return self.navigationController
     }
+    
+    // MARK: Methods
     
     // если что-то пошло не так
     func operationFailed(_ error: Error) {

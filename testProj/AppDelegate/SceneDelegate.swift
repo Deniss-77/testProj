@@ -7,7 +7,8 @@
 
 import UIKit
 
-final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+final class SceneDelegate: UIResponder,
+                           UIWindowSceneDelegate {
     
     // MARK: Properties
     
@@ -21,12 +22,14 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         if let windowScene = scene as? UIWindowScene {
             
-            let navController = UINavigationController(rootViewController: MainViewConfigurator().initScene())
+            let rootViewController = MainViewConfigurator().initScene()
+            let navController = UINavigationController(rootViewController: rootViewController)
             
             let window = UIWindow(windowScene: windowScene)
             window.rootViewController = navController
-            self.window = window
             window.makeKeyAndVisible()
+            
+            self.window = window
         }
     }
     

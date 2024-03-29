@@ -13,18 +13,13 @@ protocol DetailedViewProtocol: AnyObject {
 
 final class DetailedViewController: UIViewController {
     
-    private let backView: UIView = {
-        
-        let view = UIView()
-        view.backgroundColor = .white
-        
-        return view
-    }()
+    // MARK: Visual components
     
     private let imageView: UIImageView = {
         
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
+        imageView.layer.cornerRadius = 10
         imageView.layer.masksToBounds = true
         
         return imageView
@@ -52,8 +47,7 @@ final class DetailedViewController: UIViewController {
         self.title = "Картинка"
         
         // add subViews
-        self.view.addSubview(self.backView)
-        self.backView.addSubview(self.imageView)
+        self.view.addSubview(self.imageView)
         
         // backgroundColor
         self.view.backgroundColor = .white
@@ -62,14 +56,10 @@ final class DetailedViewController: UIViewController {
     // установка констрейнтов
     private func setupConstraints() {
         
-        self.backView.snp.makeConstraints { make in
-            make.edges.equalTo(self.view.safeAreaLayoutGuide)
-        }
-        
         self.imageView.snp.makeConstraints { make in
-            
             make.centerX.centerY.equalToSuperview()
-            make.top.left.right.bottom.equalToSuperview().inset(20)
+            make.height.equalTo(self.view.frame.height / 3)
+            make.left.right.equalToSuperview().inset(20)
         }
     }
     
@@ -77,7 +67,6 @@ final class DetailedViewController: UIViewController {
     private func setImage() {
         
         guard let imageDownloadURLString = self.viewModel?.fetchUrl() else { return }
-        
         let url = URL(string: imageDownloadURLString)
         
         self.imageView.sd_setImage(with: url) { [weak self] image, error, cache, url in

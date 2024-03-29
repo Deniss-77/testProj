@@ -30,7 +30,6 @@ final class MainViewCollectionCell: UICollectionViewCell {
         
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        
         imageView.layer.cornerRadius = 10
         imageView.layer.masksToBounds = true
         
@@ -57,7 +56,6 @@ final class MainViewCollectionCell: UICollectionViewCell {
         
         // установка картинки
         let imageDownloadURLString = model.imageUrl
-        
         let url = URL(string: imageDownloadURLString)
         
         self.iconImageView.sd_setImage(with: url) { [weak self] image, error, cache, url in

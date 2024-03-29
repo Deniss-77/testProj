@@ -7,5 +7,5 @@
 
 import UIKit
 
-// подписываем UICollectionViewCell на протокол Identifiable
+// конформим протоколу Identifiable
 extension UICollectionViewCell: Identifiable { }

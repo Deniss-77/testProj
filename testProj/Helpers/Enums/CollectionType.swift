@@ -7,10 +7,9 @@
 
 import Foundation
 
-// MARK: Типы внешнего вида коллекции
-
+/// enum типов отображения данных коллекции
 enum CollectionType {
     
-    case vertical
-    case grid
+    case vertical // отображение списком
+    case grid // отображение сеткой
 }

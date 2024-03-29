@@ -23,7 +23,7 @@
 		FC9B3D9E2BB41AC400995135 /* SDWebImageMapKit in Frameworks */ = {isa = PBXBuildFile; productRef = FC9B3D9D2BB41AC400995135 /* SDWebImageMapKit */; };
 		FC9B3DA12BB41B0300995135 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = FC9B3DA02BB41B0300995135 /* SnapKit */; };
 		FC9B3DA32BB41B0300995135 /* SnapKit-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = FC9B3DA22BB41B0300995135 /* SnapKit-Dynamic */; };
-		FC9B3DA72BB4238B00995135 /* ImagesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC9B3DA62BB4238B00995135 /* ImagesService.swift */; };
+		FC9B3DA72BB4238B00995135 /* ImagesNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC9B3DA62BB4238B00995135 /* ImagesNetworkService.swift */; };
 		FC9B3DAB2BB4287000995135 /* ImagesResponseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC9B3DAA2BB4287000995135 /* ImagesResponseModel.swift */; };
 		FC9B3DB02BB4691D00995135 /* MainViewCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC9B3DAF2BB4691D00995135 /* MainViewCollectionCell.swift */; };
 		FC9B3DB22BB4692B00995135 /* MainViewCollectionDirector.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC9B3DB12BB4692B00995135 /* MainViewCollectionDirector.swift */; };
@@ -50,7 +50,7 @@
 		FC9B3D8C2BB401B600995135 /* MainViewConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewConfigurator.swift; sourceTree = "<group>"; };
 		FC9B3D912BB414C000995135 /* DetailedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedViewController.swift; sourceTree = "<group>"; };
 		FC9B3D932BB414D100995135 /* DetailedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedViewModel.swift; sourceTree = "<group>"; };
-		FC9B3DA62BB4238B00995135 /* ImagesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesService.swift; sourceTree = "<group>"; };
+		FC9B3DA62BB4238B00995135 /* ImagesNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesNetworkService.swift; sourceTree = "<group>"; };
 		FC9B3DAA2BB4287000995135 /* ImagesResponseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesResponseModel.swift; sourceTree = "<group>"; };
 		FC9B3DAF2BB4691D00995135 /* MainViewCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewCollectionCell.swift; sourceTree = "<group>"; };
 		FC9B3DB12BB4692B00995135 /* MainViewCollectionDirector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewCollectionDirector.swift; sourceTree = "<group>"; };
@@ -122,11 +122,11 @@
 		128177EE2BB3268A00E40AD2 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				FC9B3DD02BB5A72B00995135 /* UIImage */,
+				128177F02BB326A400E40AD2 /* Assets */,
+				FC9B3DB32BB469FE00995135 /* Enums */,
 				FC9B3DB92BB46F2700995135 /* Extensions */,
 				FC9B3DB62BB46EF000995135 /* Protocols */,
-				FC9B3DB32BB469FE00995135 /* Enums */,
-				128177F02BB326A400E40AD2 /* Assets */,
+				FC9B3DD02BB5A72B00995135 /* UIImage */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -182,7 +182,7 @@
 			isa = PBXGroup;
 			children = (
 				FC9B3DA92BB4282A00995135 /* Models */,
-				FC9B3DA62BB4238B00995135 /* ImagesService.swift */,
+				FC9B3DA62BB4238B00995135 /* ImagesNetworkService.swift */,
 			);
 			path = ImagesService;
 			sourceTree = "<group>";
@@ -224,9 +224,9 @@
 			isa = PBXGroup;
 			children = (
 				FC9B3DBA2BB46F3B00995135 /* UICollectionViewCell.swift */,
-				FC9B3DC02BB4967600995135 /* UIViewController.swift */,
-				FC9B3DD62BB5C20400995135 /* UIVIew.swift */,
 				FC9B3DD82BB5DBA200995135 /* UIColor.swift */,
+				FC9B3DD62BB5C20400995135 /* UIVIew.swift */,
+				FC9B3DC02BB4967600995135 /* UIViewController.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -330,7 +330,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FC9B3DA72BB4238B00995135 /* ImagesService.swift in Sources */,
+				FC9B3DA72BB4238B00995135 /* ImagesNetworkService.swift in Sources */,
 				FC9B3DB52BB46A0A00995135 /* CollectionType.swift in Sources */,
 				FC9B3DB22BB4692B00995135 /* MainViewCollectionDirector.swift in Sources */,
 				FC9B3D922BB414C000995135 /* DetailedViewController.swift in Sources */,

@@ -9,21 +9,22 @@ import UIKit
 
 extension UIView {
     
+    // MARK: конфигурация activity indicator
+    
     // добавление UIActivityIndicatorView
-    func addActivityIndicator() {
+    func addIndicator() {
         
-        // cоздаем новый UIView для обертки ActivityIndicator
+        // cоздаем новый UIView для обёртки ActivityIndicator
         let containerView = UIView()
-        containerView.backgroundColor = .customLightGray
+        containerView.backgroundColor = .tpLightGray
         containerView.layer.cornerRadius = 10
-        containerView.tag = 1
         containerView.layer.masksToBounds = true
+        containerView.tag = 1
         
-        // cоздаем и настраиваем ActivityIndicator
+        // конфигурация ActivityIndicator
         let activityIndicator = UIActivityIndicatorView(style: .large)
         activityIndicator.backgroundColor = .clear
         activityIndicator.color = .black
-        activityIndicator.startAnimating()
         
         // add subViews
         self.addSubview(containerView)
@@ -34,12 +35,15 @@ extension UIView {
             make.edges.equalToSuperview().inset(16)
         }
         containerView.snp.makeConstraints { make in
-            make.center.equalTo(self.snp.center)
+            make.center.equalTo(snp.center)
         }
+        
+        // animation
+        activityIndicator.startAnimating()
     }
     
     // удаление UIActivityIndicatorView
-    func removeActivityIndicator() {
+    func removeIndicator() {
         
         viewWithTag(1)?.removeFromSuperview()
     }

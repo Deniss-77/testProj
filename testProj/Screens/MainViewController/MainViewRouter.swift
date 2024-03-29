@@ -5,7 +5,7 @@
 //  Created by Roman Mokh on 27.03.2024.
 //
 
-import UIKit
+import Foundation
 
 protocol MainViewRouterProtocol: AnyObject {
     func routeToDetailedViewController(with url: String)
@@ -31,8 +31,9 @@ final class MainViewRouter: MainViewRouterProtocol {
         guard let navigationController = self.view?.navController else { return }
         
         let viewController = DetailedConfigurator().initScene()
-        
         viewController.viewModel?.saveUrl(url: url)
-        navigationController.pushViewController(viewController, animated: true)
+        
+        navigationController.pushViewController(viewController,
+                                                animated: true)
     }
 }

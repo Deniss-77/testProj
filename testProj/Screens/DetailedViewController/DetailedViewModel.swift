@@ -13,20 +13,23 @@ protocol DetailedViewModelProtocol: AnyObject {
     func fetchUrl() -> String?
 }
 
-final class DetailedViewModel: DetailedViewModelProtocol {
+final class DetailedViewModel {
     
     // MARK: Struct
     
-    struct DetailedStruct {
+    struct DetailedViewStruct {
         
         var imageUrl: String? // ссылка для получения картинки
     }
     
     // MARK: Properties
     
-    lazy var detailedDataModel: DetailedStruct = DetailedStruct()
-    
-    // MARK: Methods
+    private lazy var detailedDataModel: DetailedViewStruct = DetailedViewStruct()
+}
+
+// MARK: реализация протокола DetailedViewModelProtocol
+
+extension DetailedViewModel: DetailedViewModelProtocol {
     
     // сохранение url
     func saveUrl(url: String) {

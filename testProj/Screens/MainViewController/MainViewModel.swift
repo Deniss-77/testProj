@@ -5,21 +5,21 @@
 //  Created by Roman Mokh on 27.03.2024.
 //
 
-import UIKit
+import Foundation
 
 protocol MainViewModelProtocol: MainViewModelNavigationProtocol,
                                 MainViewModelLanProtocol {
     
-    func fetchCountOgPage() -> Int
+    // bindings
+    var didFetchData: (() -> Void)? { get set }
+    var didFetchDataWithFailer: ((Error) -> Void)? { get set }
+    
+    func fetchCountOfPage() -> Int
     func fetchCollectionViewModelsCount() -> Int
     func fetchCollectionViewCellModel(indexPath: IndexPath) -> MainViewCollectionCell.MainViewCollectionCellModel
     func fetchCollectionType() -> CollectionType
     func changeCollectionType()
     func incrementCountOfPage()
-    
-    // binding
-    var didFetchData: (() -> Void)? { get set }
-    var didFetchDataWithFailer: ((Error) -> Void)? { get set }
 }
 
 // протокол навигации
@@ -27,17 +27,19 @@ protocol MainViewModelNavigationProtocol: AnyObject {
     func moveToDetailViewController(with url: String)
 }
 
-// протокол сработы с запросами
+// протокол работы с запросами
 protocol MainViewModelLanProtocol: AnyObject {
     func fetchImages()
 }
 
-final class MainViewModel: MainViewModelProtocol {
+final class MainViewModel {
     
     // MARK: Struct
     
     struct MainViewStruct {
+        
         var photos: [Photo] = [] // картинки
+        var countOfPage: Int = 1 // кол-во страниц
     }
     
     // MARK: Properties
@@ -46,28 +48,41 @@ final class MainViewModel: MainViewModelProtocol {
     var didFetchData: (() -> Void)?
     var didFetchDataWithFailer: ((Error) -> Void)?
     
-    private var router: MainViewRouterProtocol? // роутер
-    private lazy var mainDataModel: MainViewStruct = MainViewStruct() // моделька данных экрана
-    
-    // кол-во страниц
-    private var countOfPage: Int = 1
-    
+    // роутер
+    private let router: MainViewRouterProtocol
+    // сетевой слой
+    private let imagesNetwork: ImagesNetworkServiceProtocol
+    // моделька данных экрана
+    private lazy var mainDataModel: MainViewStruct = MainViewStruct()
     // коллекция
     var collectionDirector: MainViewCollectionDirectorProtocol? // директор по построению коллекции
     private lazy var collectionViewModels: [MainViewCollectionCell.MainViewCollectionCellModel] = [] // модельки ячеек коллекции
-    private var collectionType: CollectionType = .vertical // тип коллекции
+    private lazy var collectionType: CollectionType = .vertical // тип коллекции
     
     // MARK: Initializer
     
-    init(router: MainViewRouterProtocol) {
+    init(router: MainViewRouterProtocol,
+         imagesNetwork: ImagesNetworkServiceProtocol) {
+        
         self.router = router
+        self.imagesNetwork = imagesNetwork
     }
     
-    // MARK: Methods
+    // MARK: Private methods
+    
+    // формирование collectionViewModels на основе полученных данных
+    private func constructCollectionView() {
+        self.collectionViewModels = self.collectionDirector?.constructCollectionViewModels(by: self.mainDataModel) ?? []
+    }
+}
+
+// MARK: реализация протокола MainViewModelProtocol
+
+extension MainViewModel: MainViewModelProtocol {
     
     // получение кол-ва страниц
-    func fetchCountOgPage() -> Int {
-        return self.countOfPage
+    func fetchCountOfPage() -> Int {
+        return self.mainDataModel.countOfPage
     }
     
     // получение кол-ва моделек ячеек
@@ -92,14 +107,7 @@ final class MainViewModel: MainViewModelProtocol {
     
     // увеличиваем кол-во страниц
     func incrementCountOfPage() {
-        self.countOfPage += 1
-    }
-    
-    // MARK: Private methods
-    
-    // получение collectionViewModels на основе полученных данных
-    private func constructCollectionView() {
-        self.collectionViewModels = self.collectionDirector?.constructCollectionViewModels(by: self.mainDataModel) ?? []
+        self.mainDataModel.countOfPage += 1
     }
 }
 
@@ -109,7 +117,7 @@ extension MainViewModel: MainViewModelNavigationProtocol {
     
     // переход на детальный экран
     func moveToDetailViewController(with url: String) {
-        self.router?.routeToDetailedViewController(with: url)
+        self.router.routeToDetailedViewController(with: url)
     }
 }
 
@@ -122,9 +130,9 @@ extension MainViewModel: MainViewModelLanProtocol {
         
         Task {
             do {
-                
-                let photos = try await ImagesService().fetchImages(page: self.countOfPage) ?? []
+                let photos = try await self.imagesNetwork.fetchImages(page: self.mainDataModel.countOfPage)
                 self.mainDataModel.photos.append(contentsOf: photos)
+                // формирование моделек ячеек
                 self.constructCollectionView()
                 self.didFetchData?()
                 

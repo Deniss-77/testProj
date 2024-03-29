@@ -7,8 +7,9 @@
 
 import UIKit
 
-// даём название иконки такое же как и в файле Assets
+/// структура, содержащая в себе иконки приложения
+/// название иконкам даём такое же, как и в файле Assets, соблюдая последовательность
 struct UIImageName {
     
-    static let iconCollection = UIImage(named: "iconCollection")
+    static let iconCollection = UIImage(named: "iconCollection")!
 }

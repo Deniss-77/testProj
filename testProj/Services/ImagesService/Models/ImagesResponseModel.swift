@@ -7,21 +7,30 @@
 
 import Foundation
 
-struct ImagesResponseModel: Codable {
+struct ImagesResponseModel: Decodable {
     
     let photos: PhotosInfo?
 }
 
-struct PhotosInfo: Codable {
+struct PhotosInfo: Decodable {
+    
+    enum CodingKeys: String, CodingKey {
+        
+        case page
+        case pages
+        case perpage
+        case total
+        case photos = "photo"
+    }
     
     let page: Int?
     let pages: Int?
     let perpage: Int?
     let total: Int?
-    let photo: [Photo]?
+    let photos: [Photo]?
 }
 
-struct Photo: Codable {
+struct Photo: Decodable {
     
     let id: String?
     let owner: String?
